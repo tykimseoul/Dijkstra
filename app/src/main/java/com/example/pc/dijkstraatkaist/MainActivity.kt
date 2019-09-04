@@ -12,6 +12,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
     )
     private var missingPermissions: MutableList<Int>? = null
     private lateinit var naverMap: NaverMap
+    private val myMarker: Marker = Marker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,12 +78,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
         naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        naverMap.uiSettings.apply {
+            isZoomControlEnabled = false
+            isLogoClickEnabled = false
+        }
         naverMap.addOnLocationChangeListener(this)
         fusedLocationClient.lastLocation.addOnSuccessListener {
             Log.e("locccc", it.toString())
             val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0))
                 .animate(CameraAnimation.Easing)
             naverMap.moveCamera(cameraUpdate)
+            myMarker.position = LatLng(it.latitude, it.longitude)
+            myMarker.map = naverMap
         }
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
     }
@@ -91,6 +99,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
         val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(p0.latitude, p0.longitude), 15.0))
             .animate(CameraAnimation.Easing)
         naverMap.moveCamera(cameraUpdate)
+        myMarker.position = LatLng(p0.latitude, p0.longitude)
+        myMarker.map = naverMap
     }
 
     private fun requestAllPermissions() {
