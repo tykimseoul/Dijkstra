@@ -34,11 +34,15 @@ class Graph {
         }
     }
 
-    fun generatePath():MultipartPathOverlay {
-        return MultipartPathOverlay().apply {
-            coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
-            colorParts = edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+    companion object {
+        fun generatePath(edges: List<Edge>): MultipartPathOverlay {
+            return MultipartPathOverlay().apply {
+                coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
+                colorParts =
+                    edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+            }
         }
+
     }
 
     override fun toString(): String {
