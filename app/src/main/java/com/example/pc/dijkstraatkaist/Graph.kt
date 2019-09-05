@@ -1,6 +1,8 @@
 package com.example.pc.dijkstraatkaist
 
+import android.graphics.Color
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.overlay.MultipartPathOverlay
 
 class Graph {
     val nodes = mutableSetOf<Node>()
@@ -14,6 +16,7 @@ class Graph {
                 field = nodes.find { it == value }
             }
         }
+    val singlePath = mutableListOf<Edge>()
 
     fun addNewNode(latLng: LatLng) {
         Node(latLng).let {
@@ -30,6 +33,13 @@ class Graph {
             nodes.find { it.coordinates == latLng }?.let {
                 edges.add(Edge(selected, it))
             }
+        }
+    }
+
+    fun generatePath():MultipartPathOverlay {
+        return MultipartPathOverlay().apply {
+            coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
+            colorParts = edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
         }
     }
 

@@ -17,19 +17,17 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_admin)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        add_new.setOnClickListener {
-            naverMap.cameraPosition.target.let {
-                graph.addNewNode(it)
-                graph.selectedNode = Node(it)
-            }
-            Log.e("graph", graph.toString())
-        }
         link.setOnClickListener {
             naverMap.cameraPosition.target.let {
                 graph.linkNode(it)
                 graph.selectedNode = Node(it)
             }
             Log.e("graph", graph.toString())
+            try {
+                graph.generatePath().map = naverMap
+            } catch (e: IllegalArgumentException) {
+
+            }
         }
     }
 
