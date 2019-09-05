@@ -1,10 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AdminActivity">
+
+    <com.naver.maps.map.MapView
+        android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".AdminActivity">
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/target"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_target_black_48dp"
+        app:layout_constraintBottom_toBottomOf="@id/mapView"
+        app:layout_constraintLeft_toLeftOf="@id/mapView"
+        app:layout_constraintRight_toRightOf="@id/mapView"
+        app:layout_constraintTop_toTopOf="@id/mapView" />
+
+    <Button
+        android:id="@+id/link"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="link"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
