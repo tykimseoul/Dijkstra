@@ -16,9 +16,8 @@ class Graph {
                 field = nodes.find { it == value }
             }
         }
-    val singlePath = mutableListOf<Edge>()
 
-    fun addNewNode(latLng: LatLng) {
+    private fun addNewNode(latLng: LatLng) {
         Node(latLng).let {
             if (it !in nodes) {
                 it.idx = nodes.size
