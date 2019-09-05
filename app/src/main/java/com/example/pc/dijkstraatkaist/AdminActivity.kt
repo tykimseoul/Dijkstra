@@ -1,11 +1,15 @@
 package com.example.pc.dijkstraatkaist
 
+import android.graphics.PointF
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.OverlayImage
 import kotlinx.android.synthetic.main.activity_admin.*
 
 class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -23,6 +27,18 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
                 graph.selectedNode = Node(it)
             }
             Log.e("graph", graph.toString())
+            graph.nodes.forEach {
+                Marker().apply {
+                    position = it.coordinates
+                    icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
+                    anchor = PointF(0.5f, 1.0f)
+                    onClickListener = Overlay.OnClickListener {
+                        graph.selectedNode = Node(position)
+                        true
+                    }
+                    map = naverMap
+                }
+            }
             try {
                 graph.generatePath().map = naverMap
             } catch (e: IllegalArgumentException) {
@@ -33,6 +49,7 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
+        naverMap.uiSettings.isZoomControlEnabled = false
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
     }
 

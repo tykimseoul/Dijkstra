@@ -11,6 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageView
+        android:id="@+id/target"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_target_black_48dp"
+        app:layout_constraintBottom_toBottomOf="@id/mapView"
+        app:layout_constraintLeft_toLeftOf="@id/mapView"
+        app:layout_constraintRight_toRightOf="@id/mapView"
+        app:layout_constraintTop_toTopOf="@id/mapView" />
+
     <Button
         android:id="@+id/link"
         android:layout_width="100dp"
