@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -18,6 +19,8 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
+import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.OverlayImage
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -39,6 +42,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
     private var naverMap: NaverMap? = null
     private val myMarker: Marker = Marker()
     private var path: MultipartPathOverlay? = null
+    private val markers = mutableListOf<Marker>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +77,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
                 path?.map = null
                 path = Graph.generatePath(list)
                 path?.map = naverMap
+                markers.forEach { it.map = null }
+                markers.clear()
+                Graph.findNodes(list).forEach {
+                    markers.add(
+                        Marker().apply {
+                            position = it.coordinates
+                            icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
+                            anchor = PointF(0.5f, 1.0f)
+                            onClickListener = Overlay.OnClickListener {
+                                true
+                            }
+                            map = naverMap
+                        }
+                    )
+                }
             }
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

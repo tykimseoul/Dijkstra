@@ -43,6 +43,14 @@ class Graph {
             }
         }
 
+        fun findNodes(edges: List<Edge>): MutableSet<Node> {
+            val nodeSet = mutableSetOf<Node>()
+            edges.forEach {
+                nodeSet.add(it.first)
+                nodeSet.add(it.second)
+            }
+            return nodeSet
+        }
     }
 
     override fun toString(): String {
