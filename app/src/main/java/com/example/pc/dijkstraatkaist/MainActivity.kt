@@ -1,22 +1,44 @@
 package com.example.pc.dijkstraatkaist
 
-import android.content.Intent
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.content.Intent
 import android.support.v7.widget.Toolbar
 import android.widget.Toast
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
 import kotlinx.android.synthetic.main.activity_main.*
 import android.view.Menu
 import android.view.MenuItem
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
+class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocationChangeListener {
+
+
+    private val fusedLocationClient: FusedLocationProviderClient by lazy {
+        LocationServices.getFusedLocationProviderClient(this)
+    }
+    val CODE_MULTIPLE_PERMISSIONS = 10
+
+    private val permissions = arrayOf(
+        ACCESS_FINE_LOCATION
+    )
+    private var missingPermissions: MutableList<Int>? = null
+    private lateinit var naverMap: NaverMap
+    private val myMarker: Marker = Marker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        requestAllPermissions()
         setSupportActionBar(toolbar as Toolbar)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
@@ -73,8 +95,53 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
+  
+    @SuppressLint("MissingPermission")
     override fun onMapReady(p0: NaverMap) {
+        naverMap = p0
+        naverMap.locationTrackingMode = LocationTrackingMode.Follow
+        naverMap.uiSettings.apply {
+            isZoomControlEnabled = false
+            isLogoClickEnabled = false
+        }
+        naverMap.addOnLocationChangeListener(this)
+        fusedLocationClient.lastLocation.addOnSuccessListener {
+            Log.e("locccc", it.toString())
+            val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0))
+                .animate(CameraAnimation.Easing)
+            naverMap.moveCamera(cameraUpdate)
+            myMarker.position = LatLng(it.latitude, it.longitude)
+            myMarker.map = naverMap
+        }
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onLocationChange(p0: Location) {
+        Log.e("location", p0.toString())
+        val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(p0.latitude, p0.longitude), 15.0))
+            .animate(CameraAnimation.Easing)
+        naverMap.moveCamera(cameraUpdate)
+        myMarker.position = LatLng(p0.latitude, p0.longitude)
+        myMarker.map = naverMap
+    }
+
+    private fun requestAllPermissions() {
+        missingPermissions?.apply {
+            if (isNotEmpty()) {
+                forEach { requestPermissions(arrayOf(permissions[it]), CODE_MULTIPLE_PERMISSIONS) }
+            }
+            return
+        }
+        requestPermissions(permissions, CODE_MULTIPLE_PERMISSIONS)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            CODE_MULTIPLE_PERMISSIONS -> if (grantResults.isNotEmpty()) {
+                missingPermissions = grantResults.indices.filter {
+                    grantResults[it] != PackageManager.PERMISSION_GRANTED
+                }.toMutableList()
+            }
+        }
     }
 }
