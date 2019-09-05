@@ -10,12 +10,18 @@ import com.naver.maps.map.OnMapReadyCallback
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.Overlay
 import com.naver.maps.map.overlay.OverlayImage
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_admin.*
 
 class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
     private val graph: Graph = Graph()
 
     private lateinit var naverMap: NaverMap
+
+    private var db: GraphDatabase? = null
+    private var edgeDAO: EdgeDAO? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
@@ -24,7 +30,7 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
         link.setOnClickListener {
             naverMap.cameraPosition.target.let {
                 graph.linkNode(it)
-                graph.selectedNode = Node(it)
+                graph.selectedNode = Node(0, it)
             }
             Log.e("graph", graph.toString())
             graph.nodes.forEach {
@@ -33,7 +39,7 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
                     icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
                     anchor = PointF(0.5f, 1.0f)
                     onClickListener = Overlay.OnClickListener {
-                        graph.selectedNode = Node(position)
+                        graph.selectedNode = Node(0, position)
                         true
                     }
                     map = naverMap
@@ -51,6 +57,27 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
         naverMap = p0
         naverMap.uiSettings.isZoomControlEnabled = false
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
+    }
+
+    private fun saveGraph() {
+        Observable.fromCallable {
+            db = GraphDatabase.getDatabase(this)
+            edgeDAO = db?.edgeDAO()
+
+            with(edgeDAO) {
+                graph.edges.forEach {
+                    this?.insert(it)
+                }
+            }
+            db?.edgeDAO()?.getAllEdges()
+        }.doOnNext { list ->
+            list?.forEach {
+                Log.e("edge", it.toString())
+            }
+            finish()
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
     override fun onStart() {
@@ -71,6 +98,10 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         mapView.onSaveInstanceState(outState)
+    }
+
+    override fun onBackPressed() {
+        saveGraph()
     }
 
     override fun onStop() {

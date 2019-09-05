@@ -18,9 +18,8 @@ class Graph {
         }
 
     private fun addNewNode(latLng: LatLng) {
-        Node(latLng).let {
+        Node(nodes.size, latLng).let {
             if (it !in nodes) {
-                it.idx = nodes.size
                 nodes.add(it)
             }
         }
@@ -30,7 +29,7 @@ class Graph {
         addNewNode(latLng)
         selectedNode?.let { selected ->
             nodes.find { it.coordinates == latLng }?.let {
-                edges.add(Edge(selected, it))
+                edges.add(Edge(edges.size, selected, it))
             }
         }
     }
