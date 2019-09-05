@@ -2,21 +2,39 @@ package com.example.pc.dijkstraatkaist
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
 import kotlinx.android.synthetic.main.activity_admin.*
 
 class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
+    private val graph: Graph = Graph()
 
+    private lateinit var naverMap: NaverMap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+        add_new.setOnClickListener {
+            naverMap.cameraPosition.target.let {
+                graph.addNewNode(it)
+                graph.selectedNode = Node(it)
+            }
+            Log.e("graph", graph.toString())
+        }
+        link.setOnClickListener {
+            naverMap.cameraPosition.target.let {
+                graph.linkNode(it)
+                graph.selectedNode = Node(it)
+            }
+            Log.e("graph", graph.toString())
+        }
     }
 
     override fun onMapReady(p0: NaverMap) {
+        naverMap = p0
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
     }
 
