@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
@@ -24,6 +25,8 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     private var missingPermissions: MutableList<Int>? = null
     private val myMarker: Marker = Marker()
 
+    private val sheetBehavior by lazy { BottomSheetBehavior.from(bottom_sheet) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,6 +34,13 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
         setSupportActionBar(toolbar as Toolbar)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+        bottom_sheet.setOnClickListener {
+            if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            } else {
+                sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
     }
 
     override fun onStart() {
