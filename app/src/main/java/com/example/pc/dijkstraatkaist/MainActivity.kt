@@ -147,26 +147,21 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
             locationTrackingMode = LocationTrackingMode.Follow
             uiSettings.apply {
                 isZoomControlEnabled = false
-                isLogoClickEnabled = false
             }
             addOnLocationChangeListener(this@MainActivity)
         }
         fusedLocationClient.lastLocation.addOnSuccessListener {
-            Log.e("locccc", it.toString())
-            val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0))
-                .animate(CameraAnimation.Easing)
+            val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0)).animate(CameraAnimation.Easing)
             naverMap?.moveCamera(cameraUpdate)
             myMarker.position = LatLng(it.latitude, it.longitude)
             myMarker.map = naverMap
         }
         loadGraph()
-        Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
     }
 
     override fun onLocationChange(p0: Location) {
         Log.e("location", p0.toString())
-        val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(p0.latitude, p0.longitude), 15.0))
-            .animate(CameraAnimation.Easing)
+        val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(p0.latitude, p0.longitude), 15.0)).animate(CameraAnimation.Easing)
         naverMap?.moveCamera(cameraUpdate)
         myMarker.position = LatLng(p0.latitude, p0.longitude)
         myMarker.map = naverMap

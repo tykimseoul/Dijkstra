@@ -2,11 +2,14 @@ package com.example.pc.dijkstraatkaist
 
 import android.graphics.Color
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
 
 class Graph {
     val nodes = mutableSetOf<Node>()
     val edges = mutableListOf<Edge>()
+    var path: MultipartPathOverlay? = null
+    val markers = mutableListOf<Marker>()
     var selectedNode: Node? = null
         set(value) {
             if (value !in nodes) {
