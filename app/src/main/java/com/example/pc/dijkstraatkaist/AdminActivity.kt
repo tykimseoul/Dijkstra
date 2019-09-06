@@ -5,7 +5,6 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
@@ -41,6 +40,27 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             Log.e("graph", graph.toString())
             drawGraph()
+        }
+        move.setOnClickListener {
+            if (graph.movingNode == null) {
+                graph.movingNode = graph.selectedNode
+                move.text = "drop"
+            } else {
+                naverMap.cameraPosition.target.let {
+                    graph.edges.forEach { edge ->
+                        if (edge.first == graph.movingNode) {
+                            edge.first.coordinates = it
+                        }
+                        if (edge.second == graph.movingNode) {
+                            edge.second.coordinates = it
+                        }
+                    }
+                    graph.nodes.find { node -> node.idx == graph.movingNode?.idx }?.coordinates = it
+                    graph.movingNode = null
+                    drawGraph()
+                }
+                move.text = "move"
+            }
         }
     }
 
@@ -92,7 +112,7 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
             .subscribe()
     }
 
-    private fun drawGraph(){
+    private fun drawGraph() {
         runOnUiThread {
             graph.path?.map = null
             graph.path = Graph.generatePath(graph.edges)

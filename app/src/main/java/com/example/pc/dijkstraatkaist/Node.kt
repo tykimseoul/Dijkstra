@@ -2,7 +2,7 @@ package com.example.pc.dijkstraatkaist
 
 import com.naver.maps.geometry.LatLng
 
-data class Node(var idx: Int? = null, val coordinates: LatLng) {
+data class Node(var idx: Int? = null, var coordinates: LatLng) {
 
     override fun equals(other: Any?): Boolean {
         if (other as? Node == null) {

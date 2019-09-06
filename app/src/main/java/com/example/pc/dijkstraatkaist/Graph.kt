@@ -19,6 +19,7 @@ class Graph {
                 field = nodes.find { it == value }
             }
         }
+    var movingNode: Node? = null
 
     private fun addNewNode(latLng: LatLng) {
         Node(nodes.size, latLng).let {
