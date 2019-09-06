@@ -12,15 +12,11 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
-import com.naver.maps.map.overlay.Marker
-import com.naver.maps.map.overlay.MultipartPathOverlay
-import com.naver.maps.map.overlay.Overlay
-import com.naver.maps.map.overlay.OverlayImage
+import com.naver.maps.map.overlay.*
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -80,12 +76,19 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
                 markers.forEach { it.map = null }
                 markers.clear()
                 Graph.findNodes(list).forEach {
+                    val window = InfoWindow()
+                    window.adapter = DijkstraInfoWindowAdapter(this@MainActivity)
                     markers.add(
                         Marker().apply {
                             position = it.coordinates
                             icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
                             anchor = PointF(0.5f, 1.0f)
                             onClickListener = Overlay.OnClickListener {
+                                if (window.marker == null) {
+                                    window.open(this)
+                                } else {
+                                    window.close()
+                                }
                                 true
                             }
                             map = naverMap
