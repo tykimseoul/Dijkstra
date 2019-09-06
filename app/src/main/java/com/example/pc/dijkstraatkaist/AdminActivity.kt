@@ -46,7 +46,7 @@ class AdminActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
             try {
-                graph.generatePath().map = naverMap
+                Graph.generatePath(graph.edges).map = naverMap
             } catch (e: IllegalArgumentException) {
 
             }

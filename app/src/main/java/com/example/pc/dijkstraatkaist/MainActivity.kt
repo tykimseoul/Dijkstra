@@ -2,22 +2,29 @@ package com.example.pc.dijkstraatkaist
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.PointF
 import android.location.Location
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
-import android.content.Intent
 import android.support.v7.widget.Toolbar
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
+import com.naver.maps.map.overlay.MultipartPathOverlay
+import com.naver.maps.map.overlay.Overlay
+import com.naver.maps.map.overlay.OverlayImage
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import android.view.Menu
-import android.view.MenuItem
 
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocationChangeListener {
@@ -26,14 +33,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
     private val fusedLocationClient: FusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
-    val CODE_MULTIPLE_PERMISSIONS = 10
+    private val CODE_MULTIPLE_PERMISSIONS = 10
 
     private val permissions = arrayOf(
         ACCESS_FINE_LOCATION
     )
     private var missingPermissions: MutableList<Int>? = null
-    private lateinit var naverMap: NaverMap
+    private var naverMap: NaverMap? = null
     private val myMarker: Marker = Marker()
+    private var path: MultipartPathOverlay? = null
+    private val markers = mutableListOf<Marker>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +61,41 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
     override fun onResume() {
         super.onResume()
         mapView.onResume()
+        naverMap?.let {
+            loadGraph()
+        }
+    }
+
+    private fun loadGraph() {
+        Observable.fromCallable {
+            GraphDatabase.getDatabase(this).edgeDAO().getAllEdges()
+        }.doOnNext { list ->
+            list?.forEach {
+                Log.e("edge", it.toString())
+            }
+            runOnUiThread {
+                path?.map = null
+                path = Graph.generatePath(list)
+                path?.map = naverMap
+                markers.forEach { it.map = null }
+                markers.clear()
+                Graph.findNodes(list).forEach {
+                    markers.add(
+                        Marker().apply {
+                            position = it.coordinates
+                            icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
+                            anchor = PointF(0.5f, 1.0f)
+                            onClickListener = Overlay.OnClickListener {
+                                true
+                            }
+                            map = naverMap
+                        }
+                    )
+                }
+            }
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
     override fun onPause() {
@@ -88,31 +132,34 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
         // Handle item selection
         return when (item.itemId) {
             R.id.edit -> {
-                val intent=Intent(this, AdminActivity::class.java)
+                val intent = Intent(this, AdminActivity::class.java)
                 startActivity(intent)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-  
+
     @SuppressLint("MissingPermission")
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
-        naverMap.locationTrackingMode = LocationTrackingMode.Follow
-        naverMap.uiSettings.apply {
-            isZoomControlEnabled = false
-            isLogoClickEnabled = false
+        naverMap?.apply {
+            locationTrackingMode = LocationTrackingMode.Follow
+            uiSettings.apply {
+                isZoomControlEnabled = false
+                isLogoClickEnabled = false
+            }
+            addOnLocationChangeListener(this@MainActivity)
         }
-        naverMap.addOnLocationChangeListener(this)
         fusedLocationClient.lastLocation.addOnSuccessListener {
             Log.e("locccc", it.toString())
             val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0))
                 .animate(CameraAnimation.Easing)
-            naverMap.moveCamera(cameraUpdate)
+            naverMap?.moveCamera(cameraUpdate)
             myMarker.position = LatLng(it.latitude, it.longitude)
             myMarker.map = naverMap
         }
+        loadGraph()
         Toast.makeText(this, "map ready", Toast.LENGTH_LONG).show()
     }
 
@@ -120,7 +167,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, NaverMap.OnLocatio
         Log.e("location", p0.toString())
         val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(p0.latitude, p0.longitude), 15.0))
             .animate(CameraAnimation.Easing)
-        naverMap.moveCamera(cameraUpdate)
+        naverMap?.moveCamera(cameraUpdate)
         myMarker.position = LatLng(p0.latitude, p0.longitude)
         myMarker.map = naverMap
     }

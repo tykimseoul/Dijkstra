@@ -34,10 +34,22 @@ class Graph {
         }
     }
 
-    fun generatePath():MultipartPathOverlay {
-        return MultipartPathOverlay().apply {
-            coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
-            colorParts = edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+    companion object {
+        fun generatePath(edges: List<Edge>): MultipartPathOverlay {
+            return MultipartPathOverlay().apply {
+                coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
+                colorParts =
+                    edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+            }
+        }
+
+        fun findNodes(edges: List<Edge>): MutableSet<Node> {
+            val nodeSet = mutableSetOf<Node>()
+            edges.forEach {
+                nodeSet.add(it.first)
+                nodeSet.add(it.second)
+            }
+            return nodeSet
         }
     }
 
