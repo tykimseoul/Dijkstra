@@ -15,7 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-abstract class GraphActivity:AppCompatActivity(), OnMapReadyCallback {
+abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
     val graph: Graph = Graph()
     var naverMap: NaverMap? = null
     private val myMarker: Marker = Marker()
@@ -42,22 +42,31 @@ abstract class GraphActivity:AppCompatActivity(), OnMapReadyCallback {
             graph.path?.map = null
             graph.path = Graph.generatePath(graph.edges)
             graph.path?.map = naverMap
-            graph.markers.forEach { it.map = null }
-            graph.markers.clear()
-            Graph.findNodes(graph.edges).forEach {
-                graph.markers.add(
-                    Marker().apply {
-                        position = it.coordinates
-                        icon = OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
-                        anchor = PointF(0.5f, 1.0f)
-                        onClickListener = Overlay.OnClickListener {
-                            graph.selectedNode = Node(0, position)
-                            true
-                        }
-                        map = naverMap
+            placeMarkers()
+        }
+    }
+
+    private fun placeMarkers(){
+        graph.markers.forEach { it.map = null }
+        graph.markers.clear()
+        Graph.findNodes(graph.edges).forEach {
+            graph.markers.add(
+                Marker().apply {
+                    position = it.coordinates
+                    icon = if (graph.selectedNode?.coordinates == position) {
+                        OverlayImage.fromResource(R.drawable.ic_marker_blue_48dp)
+                    } else {
+                        OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
                     }
-                )
-            }
+                    anchor = PointF(0.5f, 1.0f)
+                    onClickListener = Overlay.OnClickListener {
+                        graph.selectedNode = Node(0, position)
+                        placeMarkers()
+                        true
+                    }
+                    map = naverMap
+                }
+            )
         }
     }
 
