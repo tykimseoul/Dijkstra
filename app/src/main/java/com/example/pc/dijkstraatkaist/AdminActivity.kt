@@ -22,7 +22,8 @@ class AdminActivity : GraphActivity() {
                 graph.selectedNode = Node(0, it)
             }
             Log.e("graph", graph.toString())
-            drawGraph()
+            updatePath()
+            updateMarkers()
         }
         move.setOnClickListener {
             if (graph.movingNode == null) {
@@ -40,7 +41,8 @@ class AdminActivity : GraphActivity() {
                     }
                     graph.nodes.find { node -> node.idx == graph.movingNode?.idx }?.coordinates = it
                     graph.movingNode = null
-                    drawGraph()
+                    updatePath()
+                    updateMarkers()
                 }
                 move.text = "move"
             }

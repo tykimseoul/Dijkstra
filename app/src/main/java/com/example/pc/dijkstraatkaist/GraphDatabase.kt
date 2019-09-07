@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
 
-@Database(entities = [Edge::class], version = 3)
+@Database(entities = [Edge::class], version = 4)
 @TypeConverters(Converters::class)
 abstract class GraphDatabase : RoomDatabase() {
 

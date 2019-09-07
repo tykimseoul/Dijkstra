@@ -13,6 +13,8 @@ data class Edge(
 ) {
     val length: Double
         get() = first.coordinates.distanceTo(second.coordinates)
+    @Ignore
+    var highlight: Boolean = false
 
     override fun toString(): String {
         return "Edge($first <=> $second, $length m)"

@@ -43,7 +43,10 @@ class Graph {
             return if (edges.isNotEmpty()) {
                 MultipartPathOverlay().apply {
                     coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
-                    colorParts = edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+                    colorParts = edges.map {
+                        if (it.highlight) MultipartPathOverlay.ColorPart(Color.GREEN, Color.WHITE, Color.GRAY, Color.LTGRAY)
+                        else MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY)
+                    }
                 }
             } else {
                 null

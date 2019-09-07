@@ -1,11 +1,11 @@
 package com.example.pc.dijkstraatkaist
 
-class DijkstraUtil(val graph: Graph) {
+class DijkstraUtil(private val graph: Graph) {
     private val adjacencyMatrix: Array<DoubleArray> by lazy {
         val matrix = Array(graph.nodes.size) { DoubleArray(graph.nodes.size) }
         graph.edges.forEach {
             matrix[it.first.idx][it.second.idx] = it.length
-            matrix[it.first.idx][it.second.idx] = it.length
+            matrix[it.second.idx][it.first.idx] = it.length
         }
         matrix
     }
@@ -31,14 +31,20 @@ class DijkstraUtil(val graph: Graph) {
         }
 
         val path = tracePath(end.idx, parents, mutableListOf())
+        graph.edges.forEach { it.highlight = false }
         val edges = path.windowed(2, 1).map {
-            graph.edges.find { edge-> edge == Edge(0, Node(it[0]), Node(it[1])) } as Edge
+            val edge = graph.edges.find { edge ->
+                edge == Edge(0, Node(it[0]), Node(it[1]))
+            } as Edge
+            edge.highlight = true
+            edge
         }
         return Pair(edges, distances[end.idx])
     }
 
     private fun tracePath(from: Int, parents: IntArray, path: MutableList<Int>): MutableList<Int> {
         if (parents[from] == -1) {
+            path.add(from)
             return path
         }
         path.add(from)

@@ -48,6 +48,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
             if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
                 val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
                 distance.text = path.second.toString()
+                updatePath()
             }
         }
         end.setOnClickListener {
@@ -55,6 +56,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
             if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
                 val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
                 distance.text = path.second.toString()
+                updatePath()
             }
         }
     }

@@ -27,47 +27,49 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
         Observable.fromCallable {
             GraphDatabase.getDatabase(this).edgeDAO().getAllEdges()
         }.doOnNext { list ->
-            list?.forEach {
-                Log.e("edge", it.toString())
-            }
+            Log.e("load edges", list.size.toString())
+            graph.edges.clear()
             graph.edges.addAll(list)
-            drawGraph()
+            updatePath()
+            updateMarkers()
+            graph.selectedNode = graph.nodes.find { it.idx == 0 }
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
     }
 
-    fun drawGraph() {
+    fun updatePath() {
         runOnUiThread {
             graph.path?.map = null
             graph.path = Graph.generatePath(graph.edges)
             graph.path?.map = naverMap
-            placeMarkers()
         }
     }
 
-    private fun placeMarkers(){
-        graph.markers.forEach { it.map = null }
-        graph.markers.clear()
+    fun updateMarkers() {
         graph.nodes.addAll(Graph.findNodes(graph.edges))
-        graph.nodes.forEach {
-            graph.markers.add(
-                Marker().apply {
-                    position = it.coordinates
-                    icon = if (graph.selectedNode?.coordinates == position) {
-                        OverlayImage.fromResource(R.drawable.ic_marker_blue_48dp)
-                    } else {
-                        OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
+        runOnUiThread {
+            graph.markers.forEach { it.map = null }
+            graph.markers.clear()
+            graph.nodes.forEach {
+                graph.markers.add(
+                    Marker().apply {
+                        position = it.coordinates
+                        icon = if (graph.selectedNode?.coordinates == position) {
+                            OverlayImage.fromResource(R.drawable.ic_marker_blue_48dp)
+                        } else {
+                            OverlayImage.fromResource(R.drawable.ic_marker_black_48dp)
+                        }
+                        anchor = PointF(0.5f, 1.0f)
+                        onClickListener = Overlay.OnClickListener {
+                            graph.selectedNode = Node(0, position)
+                            updateMarkers()
+                            true
+                        }
+                        map = naverMap
                     }
-                    anchor = PointF(0.5f, 1.0f)
-                    onClickListener = Overlay.OnClickListener {
-                        graph.selectedNode = Node(0, position)
-                        placeMarkers()
-                        true
-                    }
-                    map = naverMap
-                }
-            )
+                )
+            }
         }
     }
 
