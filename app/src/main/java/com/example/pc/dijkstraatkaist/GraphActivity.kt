@@ -30,6 +30,8 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
             Log.e("load edges", list.size.toString())
             graph.edges.clear()
             graph.edges.addAll(list)
+            graph.nodes.clear()
+            graph.nodes.addAll(Graph.findNodes(graph.edges))
             updatePath()
             updateMarkers()
             graph.nodes.find { it.idx == 0 }?.let {
@@ -49,8 +51,6 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun updateMarkers() {
-        graph.nodes.clear()
-        graph.nodes.addAll(Graph.findNodes(graph.edges))
         runOnUiThread {
             graph.markers.forEach { it.map = null }
             graph.markers.clear()

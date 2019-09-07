@@ -19,7 +19,10 @@ class AdminActivity : GraphActivity() {
         mapView.getMapAsync(this)
         branch.setOnClickListener {
             naverMap?.cameraPosition?.target?.let {
-                graph.linkNode(it)
+                graph.addNode(it)
+                graph.selectedNode?.let { selected ->
+                    graph.linkNode(selected.coordinates, it)
+                }
                 graph.select(Node(0, it))
             }
             Log.e("graph", graph.toString())
@@ -57,6 +60,8 @@ class AdminActivity : GraphActivity() {
         }
         delete.setOnClickListener {
             graph.removeNode()
+            graph.nodes.clear()
+            graph.nodes.addAll(Graph.findNodes(graph.edges))
             updatePath()
             updateMarkers()
         }

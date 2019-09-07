@@ -17,7 +17,7 @@ class Graph {
 
     var movingNode: Node? = null
 
-    private fun addNode(latLng: LatLng) {
+    fun addNode(latLng: LatLng) {
         Node(nodes.size, latLng).let {
             if (it !in nodes) {
                 nodes.add(it)
@@ -25,25 +25,18 @@ class Graph {
         }
     }
 
-    fun linkNode(latLng: LatLng) {
-        addNode(latLng)
-        selectedNode?.let { selected ->
-            nodes.find { it.coordinates == latLng }?.let {
-                if (it.coordinates != selected.coordinates)
-                    edges.add(Edge(edges.size, selected, it))
-            }
+    fun linkNode(first: LatLng, second: LatLng) {
+        val f = nodes.find { it.coordinates == first }
+        val s = nodes.find { it.coordinates == second }
+        if (f != null && s != null) {
+            if (f.coordinates != s.coordinates)
+                edges.add(Edge(edges.size, f, s))
         }
     }
 
-    fun linkNode(first: LatLng, second: LatLng) {
-        val f = nodes.find { it.coordinates == first } as Node
-        val s = nodes.find { it.coordinates == second } as Node
-        edges.add(Edge(edges.size, f, s))
-    }
-
-    fun removeNode(){
-        selectedNode?.let {selected->
-            edges.removeIf { (it.first== selected) or (it.second==selected)}
+    fun removeNode() {
+        selectedNode?.let { selected ->
+            edges.removeIf { (it.first == selected) or (it.second == selected) }
             nodes.remove(selected)
             selectedNodes.remove(selected)
         }
@@ -76,6 +69,7 @@ class Graph {
     companion object {
         fun generatePath(edges: List<Edge>): MultipartPathOverlay? {
             return if (edges.isNotEmpty()) {
+                Log.e("draw", edges.toString())
                 MultipartPathOverlay().apply {
                     coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
                     colorParts = edges.map {

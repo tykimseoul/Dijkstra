@@ -28,6 +28,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     private val selectedNodes = Array<Node?>(2) { null }
 
     private val sheetBehavior by lazy { BottomSheetBehavior.from(bottom_sheet) }
+    private var mapReadyCalled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,14 +70,17 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     override fun onResume() {
         super.onResume()
         mapView.onResume()
-        naverMap?.let {
-            loadGraph()
+        if (!mapReadyCalled) {
+            naverMap?.let {
+                loadGraph()
+            }
         }
     }
 
     override fun onPause() {
         super.onPause()
         mapView.onPause()
+        mapReadyCalled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -123,6 +127,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
             locationTrackingMode = LocationTrackingMode.Follow
             addOnLocationChangeListener(this@MainActivity)
         }
+        mapReadyCalled = true
     }
 
     override fun onLocationChange(p0: Location) {
