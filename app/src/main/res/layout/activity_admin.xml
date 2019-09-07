@@ -26,26 +26,35 @@
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="branch"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/move" />
+        app:layout_constraintEnd_toStartOf="@+id/move"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
         android:id="@+id/move"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="move"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/branch"
-        app:layout_constraintRight_toLeftOf="@id/connect"/>
+        app:layout_constraintEnd_toStartOf="@+id/connect"
+        app:layout_constraintStart_toEndOf="@+id/branch"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
         android:id="@+id/connect"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:text="connect"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/move"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/delete"
+        app:layout_constraintStart_toEndOf="@+id/move"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="delete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/connect"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

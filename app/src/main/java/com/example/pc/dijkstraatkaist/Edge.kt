@@ -34,7 +34,10 @@ interface EdgeDAO {
     fun getAllEdges(): List<Edge>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(word: Edge)
+    fun insert(edge: Edge)
+
+    @Query("DELETE FROM edge_table")
+    fun clear()
 }
 
 class Converters {

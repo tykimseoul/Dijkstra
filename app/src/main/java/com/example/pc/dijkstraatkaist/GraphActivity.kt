@@ -49,6 +49,7 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     fun updateMarkers() {
+        graph.nodes.clear()
         graph.nodes.addAll(Graph.findNodes(graph.edges))
         runOnUiThread {
             graph.markers.forEach { it.map = null }

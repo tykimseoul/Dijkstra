@@ -1,6 +1,7 @@
 package com.example.pc.dijkstraatkaist
 
 import android.graphics.Color
+import android.util.Log
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.MultipartPathOverlay
@@ -16,7 +17,7 @@ class Graph {
 
     var movingNode: Node? = null
 
-    private fun addNewNode(latLng: LatLng) {
+    private fun addNode(latLng: LatLng) {
         Node(nodes.size, latLng).let {
             if (it !in nodes) {
                 nodes.add(it)
@@ -25,7 +26,7 @@ class Graph {
     }
 
     fun linkNode(latLng: LatLng) {
-        addNewNode(latLng)
+        addNode(latLng)
         selectedNode?.let { selected ->
             nodes.find { it.coordinates == latLng }?.let {
                 if (it.coordinates != selected.coordinates)
@@ -38,6 +39,14 @@ class Graph {
         val f = nodes.find { it.coordinates == first } as Node
         val s = nodes.find { it.coordinates == second } as Node
         edges.add(Edge(edges.size, f, s))
+    }
+
+    fun removeNode(){
+        selectedNode?.let {selected->
+            edges.removeIf { (it.first== selected) or (it.second==selected)}
+            nodes.remove(selected)
+            selectedNodes.remove(selected)
+        }
     }
 
     fun select(node: Node) {

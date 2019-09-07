@@ -55,6 +55,11 @@ class AdminActivity : GraphActivity() {
                 updateMarkers()
             }
         }
+        delete.setOnClickListener {
+            graph.removeNode()
+            updatePath()
+            updateMarkers()
+        }
     }
 
     private fun saveGraph() {
@@ -62,16 +67,14 @@ class AdminActivity : GraphActivity() {
             db = GraphDatabase.getDatabase(this)
             edgeDAO = db?.edgeDAO()
 
-            with(edgeDAO) {
+            edgeDAO?.apply {
+                clear()
                 graph.edges.forEach {
-                    this?.insert(it)
+                    insert(it)
                 }
             }
-            db?.edgeDAO()?.getAllEdges()
-        }.doOnNext { list ->
-            list?.forEach {
-                Log.e("edge", it.toString())
-            }
+        }.doOnNext {
+            Log.e("save edges", "${graph.edges.size}")
             finish()
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
