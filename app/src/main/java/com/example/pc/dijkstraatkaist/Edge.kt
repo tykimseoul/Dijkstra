@@ -11,11 +11,18 @@ data class Edge(
     @Embedded(prefix = "second_")
     val second: Node
 ) {
-    private val length: Double
+    val length: Double
         get() = first.coordinates.distanceTo(second.coordinates)
 
     override fun toString(): String {
         return "Edge($first <=> $second, $length m)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other as? Edge == null) {
+            return false
+        }
+        return ((first == other.first) and (second == other.second)) or ((first == other.second) and (second == other.first))
     }
 }
 

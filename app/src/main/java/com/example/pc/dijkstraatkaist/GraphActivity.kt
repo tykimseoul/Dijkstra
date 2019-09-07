@@ -49,7 +49,8 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun placeMarkers(){
         graph.markers.forEach { it.map = null }
         graph.markers.clear()
-        Graph.findNodes(graph.edges).forEach {
+        graph.nodes.addAll(Graph.findNodes(graph.edges))
+        graph.nodes.forEach {
             graph.markers.add(
                 Marker().apply {
                     position = it.coordinates

@@ -12,11 +12,11 @@ class Graph {
     val markers = mutableListOf<Marker>()
     var selectedNode: Node? = null
         set(value) {
-            if (value !in nodes) {
+            if (nodes.find { it.coordinates == value?.coordinates } == null) {
                 value?.idx = nodes.size
                 field = value
             } else {
-                field = nodes.find { it == value }
+                field = nodes.find { it.coordinates == value?.coordinates }
             }
         }
     var movingNode: Node? = null
@@ -39,11 +39,14 @@ class Graph {
     }
 
     companion object {
-        fun generatePath(edges: List<Edge>): MultipartPathOverlay {
-            return MultipartPathOverlay().apply {
-                coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
-                colorParts =
-                    edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+        fun generatePath(edges: List<Edge>): MultipartPathOverlay? {
+            return if (edges.isNotEmpty()) {
+                MultipartPathOverlay().apply {
+                    coordParts = edges.map { listOf(it.first.coordinates, it.second.coordinates) }
+                    colorParts = edges.map { MultipartPathOverlay.ColorPart(Color.RED, Color.WHITE, Color.GRAY, Color.LTGRAY) }
+                }
+            } else {
+                null
             }
         }
 

@@ -6,7 +6,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import android.content.Context
 
-@Database(entities = [Edge::class], version = 1)
+@Database(entities = [Edge::class], version = 3)
 @TypeConverters(Converters::class)
 abstract class GraphDatabase : RoomDatabase() {
 
@@ -26,7 +26,8 @@ abstract class GraphDatabase : RoomDatabase() {
                     context.applicationContext,
                     GraphDatabase::class.java,
                     "word_database"
-                ).build()
+                ).fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 return instance
             }

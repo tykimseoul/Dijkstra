@@ -15,6 +15,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet.*
 
 class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     private val CODE_MULTIPLE_PERMISSIONS = 10
@@ -24,6 +25,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     )
     private var missingPermissions: MutableList<Int>? = null
     private val myMarker: Marker = Marker()
+    private val selectedNodes = Array<Node?>(2) { null }
 
     private val sheetBehavior by lazy { BottomSheetBehavior.from(bottom_sheet) }
 
@@ -39,6 +41,20 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
                 sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             } else {
                 sheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+        start.setOnClickListener {
+            selectedNodes[0] = graph.selectedNode
+            if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
+                val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
+                distance.text = path.second.toString()
+            }
+        }
+        end.setOnClickListener {
+            selectedNodes[1] = graph.selectedNode
+            if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
+                val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
+                distance.text = path.second.toString()
             }
         }
     }
