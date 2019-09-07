@@ -32,7 +32,9 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
             graph.edges.addAll(list)
             updatePath()
             updateMarkers()
-            graph.selectedNode = graph.nodes.find { it.idx == 0 }
+            graph.nodes.find { it.idx == 0 }?.let {
+                graph.select(it)
+            }
         }.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
@@ -62,7 +64,7 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
                         }
                         anchor = PointF(0.5f, 1.0f)
                         onClickListener = Overlay.OnClickListener {
-                            graph.selectedNode = Node(0, position)
+                            graph.select(Node(0, position))
                             updateMarkers()
                             true
                         }

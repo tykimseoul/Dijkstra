@@ -22,10 +22,10 @@
         app:layout_constraintTop_toTopOf="@id/mapView" />
 
     <Button
-        android:id="@+id/link"
+        android:id="@+id/branch"
         android:layout_width="100dp"
         android:layout_height="50dp"
-        android:text="link"
+        android:text="branch"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/move" />
@@ -36,7 +36,16 @@
         android:layout_height="50dp"
         android:text="move"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/link"
+        app:layout_constraintLeft_toRightOf="@id/branch"
+        app:layout_constraintRight_toLeftOf="@id/connect"/>
+
+    <Button
+        android:id="@+id/connect"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="connect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/move"
         app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

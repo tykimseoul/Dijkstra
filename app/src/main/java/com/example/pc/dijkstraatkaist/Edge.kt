@@ -17,7 +17,7 @@ data class Edge(
     var highlight: Boolean = false
 
     override fun toString(): String {
-        return "Edge($first <=> $second, $length m)"
+        return "Edge(${first.idx} <=> ${second.idx}, $length m)"
     }
 
     override fun equals(other: Any?): Boolean {

@@ -2,6 +2,7 @@ package com.example.pc.dijkstraatkaist
 
 import android.os.Bundle
 import android.util.Log
+import com.naver.maps.geometry.LatLng
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -16,10 +17,10 @@ class AdminActivity : GraphActivity() {
         setContentView(R.layout.activity_admin)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
-        link.setOnClickListener {
+        branch.setOnClickListener {
             naverMap?.cameraPosition?.target?.let {
                 graph.linkNode(it)
-                graph.selectedNode = Node(0, it)
+                graph.select(Node(0, it))
             }
             Log.e("graph", graph.toString())
             updatePath()
@@ -45,6 +46,13 @@ class AdminActivity : GraphActivity() {
                     updateMarkers()
                 }
                 move.text = "move"
+            }
+        }
+        connect.setOnClickListener {
+            if (graph.selectedNodes.filter { it != null }.size == 2) {
+                graph.linkNode(graph.selectedNodes[0]?.coordinates as LatLng, graph.selectedNodes[1]?.coordinates as LatLng)
+                updatePath()
+                updateMarkers()
             }
         }
     }

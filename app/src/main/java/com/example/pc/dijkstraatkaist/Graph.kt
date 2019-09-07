@@ -10,15 +10,10 @@ class Graph {
     val edges = mutableListOf<Edge>()
     var path: MultipartPathOverlay? = null
     val markers = mutableListOf<Marker>()
-    var selectedNode: Node? = null
-        set(value) {
-            if (nodes.find { it.coordinates == value?.coordinates } == null) {
-                value?.idx = nodes.size
-                field = value
-            } else {
-                field = nodes.find { it.coordinates == value?.coordinates }
-            }
-        }
+    val selectedNodes = mutableListOf<Node?>()
+    val selectedNode: Node?
+        get() = selectedNodes.lastOrNull { it != null }
+
     var movingNode: Node? = null
 
     private fun addNewNode(latLng: LatLng) {
@@ -33,8 +28,39 @@ class Graph {
         addNewNode(latLng)
         selectedNode?.let { selected ->
             nodes.find { it.coordinates == latLng }?.let {
-                edges.add(Edge(edges.size, selected, it))
+                if (it.coordinates != selected.coordinates)
+                    edges.add(Edge(edges.size, selected, it))
             }
+        }
+    }
+
+    fun linkNode(first: LatLng, second: LatLng) {
+        val f = nodes.find { it.coordinates == first } as Node
+        val s = nodes.find { it.coordinates == second } as Node
+        edges.add(Edge(edges.size, f, s))
+    }
+
+    fun select(node: Node) {
+        if (nodes.find { it.coordinates == node.coordinates } == null) {
+            node.idx = nodes.size
+            selectedNodes.addOrElse(node)
+        } else {
+            selectedNodes.addOrElse(nodes.find { it.coordinates == node.coordinates } as Node)
+        }
+    }
+
+    private fun MutableList<Node?>.addOrElse(node: Node) {
+        if (selectedNode != null) {
+            if (selectedNode != node) {
+                if (size >= 2) {
+                    removeAt(0)
+                    add(node)
+                } else {
+                    add(node)
+                }
+            }
+        } else {
+            add(node)
         }
     }
 
