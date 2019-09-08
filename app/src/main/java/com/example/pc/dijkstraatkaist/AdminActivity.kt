@@ -32,7 +32,6 @@ class AdminActivity : GraphActivity() {
         move.setOnClickListener {
             if (graph.movingNode == null) {
                 graph.movingNode = graph.selectedNode
-                move.text = "drop"
             } else {
                 naverMap?.cameraPosition?.target?.let {
                     graph.edges.forEach { edge ->
@@ -48,7 +47,6 @@ class AdminActivity : GraphActivity() {
                     updatePath()
                     updateMarkers()
                 }
-                move.text = "move"
             }
         }
         connect.setOnClickListener {

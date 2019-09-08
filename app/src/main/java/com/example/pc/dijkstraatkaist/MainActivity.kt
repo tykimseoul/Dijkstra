@@ -16,6 +16,7 @@ import com.naver.maps.map.*
 import com.naver.maps.map.overlay.Marker
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet.*
+import kotlin.math.round
 
 class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
     private val CODE_MULTIPLE_PERMISSIONS = 10
@@ -48,7 +49,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
             selectedNodes[0] = graph.selectedNode
             if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
                 val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
-                distance.text = path.second.toString()
+                distance.text = "${round(path.second).toInt()} m"
                 updatePath()
             }
         }
@@ -56,7 +57,7 @@ class MainActivity : GraphActivity(), NaverMap.OnLocationChangeListener {
             selectedNodes[1] = graph.selectedNode
             if ((selectedNodes[0] != null) and (selectedNodes[1] != null)) {
                 val path = DijkstraUtil(graph).shortestPath(selectedNodes[0] as Node, selectedNodes[1] as Node)
-                distance.text = path.second.toString()
+                distance.text = "${round(path.second).toInt()} m"
                 updatePath()
             }
         }

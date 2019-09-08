@@ -21,40 +21,59 @@
         app:layout_constraintRight_toRightOf="@id/mapView"
         app:layout_constraintTop_toTopOf="@id/mapView" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/branch"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_branch_white_48dp"
         android:text="branch"
+        app:fabCustomSize="@dimen/fab_size"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/move"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/move"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_move_white_48dp"
         android:text="move"
+        app:fabCustomSize="@dimen/fab_size"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/connect"
-        app:layout_constraintStart_toEndOf="@+id/branch"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/branch" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/connect"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_connect_white_48dp"
         android:text="connect"
+        app:fabCustomSize="@dimen/fab_size"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toStartOf="@+id/delete"
-        app:layout_constraintStart_toEndOf="@+id/move"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/move" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/delete"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/fab_size"
+        android:layout_height="@dimen/fab_size"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_delete_white_48dp"
         android:text="delete"
+        app:fabCustomSize="@dimen/fab_size"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/connect"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toEndOf="@+id/connect" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="16dp" />
 
 </android.support.constraint.ConstraintLayout>

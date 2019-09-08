@@ -79,7 +79,10 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     override fun onMapReady(p0: NaverMap) {
         naverMap = p0
-        naverMap?.uiSettings?.isZoomControlEnabled = false
+        naverMap?.uiSettings?.apply {
+            isZoomControlEnabled = false
+            isScaleBarEnabled = false
+        }
         fusedLocationClient.lastLocation.addOnSuccessListener {
             val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0)).animate(CameraAnimation.Easing)
             naverMap?.moveCamera(cameraUpdate)

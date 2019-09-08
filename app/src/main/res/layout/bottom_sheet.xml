@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffff"
+    android:background="@drawable/bottom_sheet_background"
     android:orientation="vertical"
     android:padding="16dp"
     app:behavior_hideable="false"
-    app:behavior_peekHeight="80dp"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <Button
@@ -15,26 +14,52 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="start"
+        android:background="@drawable/button_selector"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/end"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toLeftOf="@id/arrow"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/arrow"
+        app:layout_constraintTop_toTopOf="@id/start"
+        app:layout_constraintBottom_toBottomOf="@id/start"
+        app:layout_constraintLeft_toRightOf="@id/start"
+        app:layout_constraintRight_toLeftOf="@id/end">
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ray_start_arrow"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ray_start_end"/>
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ray_end"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="end"
-        app:layout_constraintLeft_toRightOf="@id/start"
+        android:background="@drawable/button_selector"
+        app:layout_constraintLeft_toRightOf="@id/arrow"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0"
+        android:text="- -"
+        android:textSize="20sp"
         android:id="@+id/distance"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/start"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/start"/>
+        app:layout_constraintRight_toRightOf="parent" />
 </android.support.constraint.ConstraintLayout>
