@@ -30,7 +30,8 @@ class Graph {
         val s = nodes.find { it.coordinates == second }
         if (f != null && s != null) {
             if (f.coordinates != s.coordinates)
-                edges.add(Edge(edges.size, f, s))
+                if (Edge(edges.size, f, s) !in edges)
+                    edges.add(Edge(edges.size, f, s))
         }
     }
 

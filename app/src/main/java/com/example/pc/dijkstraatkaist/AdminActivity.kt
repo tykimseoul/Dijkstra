@@ -63,6 +63,13 @@ class AdminActivity : GraphActivity() {
             updatePath()
             updateMarkers()
         }
+        delete.setOnLongClickListener {
+            graph.nodes.clear()
+            graph.edges.clear()
+            updatePath()
+            updateMarkers()
+            true
+        }
     }
 
     private fun saveGraph() {

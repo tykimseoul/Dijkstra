@@ -27,7 +27,9 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
         Observable.fromCallable {
             GraphDatabase.getDatabase(this).edgeDAO().getAllEdges()
         }.doOnNext { list ->
-            Log.e("load edges", list.size.toString())
+            list.forEach {
+                Log.e("load edge", it.toString())
+            }
             graph.edges.clear()
             graph.edges.addAll(list)
             graph.nodes.clear()
@@ -83,10 +85,12 @@ abstract class GraphActivity : AppCompatActivity(), OnMapReadyCallback {
             isZoomControlEnabled = false
             isScaleBarEnabled = false
         }
+        naverMap?.mapType = NaverMap.MapType.Hybrid
         fusedLocationClient.lastLocation.addOnSuccessListener {
             val cameraUpdate = CameraUpdate.toCameraPosition(CameraPosition(LatLng(it.latitude, it.longitude), 15.0)).animate(CameraAnimation.Easing)
             naverMap?.moveCamera(cameraUpdate)
             myMarker.position = LatLng(it.latitude, it.longitude)
+            myMarker.icon = OverlayImage.fromResource(R.drawable.ic_origin_blue_24dp)
             myMarker.map = naverMap
         }
         loadGraph()
